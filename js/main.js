@@ -1,6 +1,7 @@
-/* 575 boilerplate main.js */
+/* 575 boilerplate main.js
+MODULE 7 */
 window.onload=function(){
-  var w=1000, h=500;
+  var w=910, h=500;
   //add container to html body
   var container=d3.select("body")
       .append("svg")
@@ -23,13 +24,13 @@ window.onload=function(){
 
       var cityPop = [
           {
-              city: 'Moscow',
-              population: 11503501
+            city: 'Saint Petersburg',
+            population: 4879566
 
           },
-          {
-              city: 'Saint Petersburg',
-              population: 4879566
+          {   city: 'Moscow',
+          population: 11503501
+
           },
           {
               city: 'Novosibirsk',
@@ -40,11 +41,12 @@ window.onload=function(){
               population: 1349772
           }
       ];
-      //create linear scale withh output and input max and min
 
+      //create linear scale withh output and input max and min
       var x=d3.scale.linear()
             .range([100, 820])
             .domain([0,4]);
+      //find min, max values of array
       var minPop=d3.min(cityPop, function(d){
         return d.population;
       });
@@ -73,19 +75,19 @@ window.onload=function(){
       var yAxis=d3.svg.axis()
           .scale(y)
           .orient("left")
-
+      //add, position axis
       var axis=container.append("g")
           .attr("class","axis")
           .attr("transform","translate(60,0)")
       yAxis(axis);
 
-      //add a title
+      //add a title, position
       var title=container.append("text")
           .attr("class","title")
           .attr("text-anchor","middle")
           .attr("x", 450)
           .attr("y",30)
-          .text("City Populations: Russia")
+          .text("City Populations: Russian Federation")
       //add labels to cityPop
       var labels = container.selectAll(".labels")
         .data(cityPop)
@@ -97,11 +99,12 @@ window.onload=function(){
           return y(d.population);
         });
 
+      //break up labels into nameLine and popLine
       var nameLine=labels.append("tspan")
           .attr("class","nameLine")
           .attr("x", function(d,i){
             //horizontal position to the right of each circle
-            return x(i) + Math.sqrt(d.population * 0.001 / Math.PI);
+            return x(i) + Math.sqrt(d.population * 0.001 / Math.PI)+5;
         })
 
           .text(function(d){
@@ -113,10 +116,11 @@ window.onload=function(){
     var popLine=labels.append("tspan")
         .attr("class","popLine")
         .attr("x",function(d,i){
-          return x(i)+Math.sqrt(d.population*0.0009/Math.PI);
+          return x(i)+Math.sqrt(d.population*0.0009/Math.PI)+5;//for some reason, it looks more symmetrical
+                                                            //multimply this one by .0009 and nameLine by .001
 
         })
-        .attr("dy","15")
+        .attr("dy","15")//position y coordiante of labels
         .text(function(d){
           return " Pop. " + format(d.population);
         });
@@ -124,31 +128,26 @@ window.onload=function(){
       var circles=container.selectAll(".circles")
           .data(cityPop)
           .enter()
-          .append("circle")
-          .attr("class","circles")
+          .append("circle") //add a circle for each datum
+          .attr("class","circles") //give class name, "circles"
           .attr("id", function(d){
             return d.city;
           })
-          .attr("r", function(d){
+          .attr("r", function(d){//give radius depending on population value
             var area=d.population*0.0004;
             return Math.sqrt(area/Math.PI);
           })
 
-          .attr("cx",function(d,i){
+          .attr("cx",function(d,i){//x coordinate, using index
             return x(i);
           })
 
-          .attr("cy",function(d){
+          .attr("cy",function(d){//y coordinate, using population
             return y(d.population);
           })
-          .style("fill",function(d,i){
+          .style("fill",function(d,i){//style circles
             return color(d.population);
           })
           .style("stroke", "#000")
 
-
-
-
-
-  console.log(container);
 }
